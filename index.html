@@ -1,27 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Noctune</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎧 Музыка в Telegram</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    #uploadBtn {
+      background-color: #1db954;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #uploadBtn:hover {
+      background-color: #1aa34a;
+    }
+    main {
+      flex: 1;
+    }
+    ul#playlist {
+      list-style: none;
+      padding: 0;
+    }
+    li.track {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid #333;
+    }
+    .track-title {
+      flex: 1;
+      margin-right: 0.5rem;
+    }
+    .track-actions button {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    .track-actions button:hover {
+      color: #fff;
+    }
+    footer {
+      margin-top: 1rem;
+    }
+    audio {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Noctune</h1>
-    <p class="subtitle">🎧 Твой плейлист внутри Telegram</p>
+    <header>
+      <div class="profile">
+        <img src="https://via.placeholder.com/40" alt="avatar" class="avatar" />
+        <span id="username">Гость</span>
+      </div>
+      <button id="uploadBtn">➕ Загрузить трек</button>
+    </header>
 
-    <div id="playlist" class="track-list">
-      <!-- Здесь будут треки -->
-    </div>
+    <main>
+      <ul id="playlist">
+        <!-- Треки будут добавлены здесь -->
+      </ul>
+    </main>
 
-    <div class="controls">
-      <input type="text" id="query" placeholder="Вставь ссылку или название...">
-      <button onclick="addTrack()">➕ Добавить</button>
-    </div>
+    <footer>
+      <audio id="player" controls></audio>
+    </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const username = tg.initDataUnsafe?.user?.first_name || "Гость";
+    document.getElementById("username").textContent = username;
+
+    const playlistEl = document.getElementById("playlist");
+    const player = document.getElementById("player");
+
+    // Пример тестового плейлиста
+    const mockTracks = [
+      { title: "Can You Feel My Heart", url: "audio/sample1.mp3" },
+      { title: "Sleep Token - The Summoning", url: "audio/sample2.mp3" },
+      { title: "Loathe - Is It Really You?", url: "audio/sample3.mp3" },
+    ];
+
+    function renderPlaylist(tracks) {
+      playlistEl.innerHTML = "";
+      tracks.forEach((track, i) => {
+        const li = document.createElement("li");
+        li.className = "track";
+
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "track-title";
+        titleSpan.textContent = track.title;
+
+        const actions = document.createElement("div");
+        actions.className = "track-actions";
+
+        const playBtn = document.createElement("button");
+        playBtn.innerHTML = "▶️";
+        playBtn.onclick = () => {
+          player.src = track.url;
+          player.play();
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "🗑";
+        deleteBtn.onclick = () => {
+          tracks.splice(i, 1);
+          renderPlaylist(tracks);
+        };
+
+        const recBtn = document.createElement("button");
+        recBtn.innerHTML = "❤️";
+        recBtn.onclick = () => {
+          alert(`Показать похожие треки для: ${track.title}`);
+        };
+
+        actions.append(playBtn, recBtn, deleteBtn);
+        li.append(titleSpan, actions);
+        playlistEl.appendChild(li);
+      });
+    }
+
+    renderPlaylist(mockTracks);
+  </script>
 </body>
 </html>
