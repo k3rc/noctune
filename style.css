@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  background: #121212;
+  font-family: "Segoe UI", sans-serif;
+  color: #fff;
+}
+
+.container {
+  padding: 20px;
+}
+
+h1 {
+  color: #1db954;
+  font-size: 24px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+.track-list {
+  margin-bottom: 20px;
+}
+
+.track {
+  background: #1e1e1e;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.track-title {
+  flex: 1;
+}
+
+button {
+  background: #1db954;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="text"] {
+  padding: 8px;
+  width: 70%;
+  border: none;
+  border-radius: 4px;
+  margin-right: 8px;
+  background: #1e1e1e;
+  color: white;
+}
