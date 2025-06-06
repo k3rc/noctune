@@ -1,33 +1,50 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
+script_js_v2 = """const tracks = [
+  {
+    title: "Demo Track from Telegram",
+    file_id: "BQACAgQAAxkBAAI123Zl...demo_file_id...",
+    type: "telegram"
+  },
+  {
+    title: "External MP3 File",
+    url: "https://example.com/audio.mp3",
+    type: "external"
+  }
+];
 
-let playlist = [];
+function search() {
+  const query = document.getElementById("query").value.toLowerCase();
+  const results = tracks.filter(t => t.title.toLowerCase().includes(query));
+  render(results);
+}
 
-function renderPlaylist() {
-  const list = document.getElementById("playlist");
-  list.innerHTML = "";
+function render(list) {
+  const container = document.getElementById("playlist");
+  container.innerHTML = "";
 
-  playlist.forEach((track, index) => {
+  list.forEach(track => {
     const div = document.createElement("div");
     div.className = "track";
     div.innerHTML = `
-      <div class="track-title">${track}</div>
-      <button onclick="playTrack(${index})">▶️</button>
+      <div>${track.title}</div>
+      <button onclick='play("${track.type}", "${track.file_id || track.url}")'>▶️</button>
     `;
-    list.appendChild(div);
+    container.appendChild(div);
   });
 }
 
-function addTrack() {
-  const input = document.getElementById("query");
-  const value = input.value.trim();
-  if (!value) return;
-  playlist.push(value);
-  renderPlaylist();
-  input.value = "";
-  // Здесь можно отправить запрос на сервер или в Telegram initData
-}
-
-function playTrack(index) {
-  alert("Воспроизведение: " + playlist[index]);
-}
+function play(type, ref) {
+  if (type === "external") {
+    const audio = new Audio(ref);
+    audio.play();
+  } else if (type === "telegram") {
+    const token = "YOUR_TELEGRAM_BOT_TOKEN";
+    fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${ref}`)
+      .then(res => res.json())
+      .then(data => {
+        const path = data.result.file_path;
+        const audioUrl = `https://api.telegram.org/file/bot${token}/${path}`;
+        const audio = new Audio(audioUrl);
+        audio.play();
+      });
+  }
+}"""
