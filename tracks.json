@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Demo Track from Telegram",
+    "file_id": "BQACAgQAAxkBAAI123Zl...demo_file_id...",
+    "type": "telegram"
+  },
+  {
+    "title": "External MP3 File",
+    "url": "https://example.com/audio.mp3",
+    "type": "external"
+  }
+]
